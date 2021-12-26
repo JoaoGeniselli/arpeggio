@@ -2,6 +2,7 @@ package com.dosei.music.arpeggio
 
 import android.graphics.Typeface
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -17,6 +18,7 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -70,16 +72,20 @@ private fun Grid(
         Canvas(modifier = Modifier.fillMaxSize()) {
             val strokeWidthInPxs = strokeWidth.toPx()
 
-            val gridStartY = 30.dp.toPx()
+            val gridStartY = 72.dp.toPx()
             val gridStartX = 0f
 
             val gridEndY = size.height - 60.dp.toPx()
 
             //region Start rect
-            val rectSize = Size(width = size.width + strokeWidthInPxs, height = gridStartY)
+            val initialRectHeight = 16.dp.toPx()
+            val rectSize = Size(width = size.width + strokeWidthInPxs, height = initialRectHeight)
             drawRect(
                 color = lineColor,
-                topLeft = Offset(x = gridStartX - (strokeWidthInPxs / 2f), y = 0f),
+                topLeft = Offset(
+                    x = gridStartX - (strokeWidthInPxs / 2f),
+                    y = gridStartY - initialRectHeight
+                ),
                 size = rectSize
             )
             //endregion
@@ -115,35 +121,40 @@ private fun Grid(
             //endregion
 
             //region Draw positions
-            positions.forEach { position ->
-                if (position.string < strings && position.fret > 0) {
-                    val fretMultiplier = position.fret
-                    val positionY = fretMultiplier * fretHeight - (fretHeight / 2f) + gridStartY
-                    val positionX = position.string * stringWidth + gridStartX
+            positions.filter { it.string < strings && it.fret > startingFret }.forEach { position ->
+                val fretMultiplier = position.fret
+                val positionY = fretMultiplier * fretHeight - (fretHeight / 2f) + gridStartY
+                val positionX = position.string * stringWidth + gridStartX
 
-                    drawCircle(
-                        color = lineColor,
-                        radius = 20.dp.toPx(),
-                        center = Offset(x = positionX, y = positionY)
+                drawCircle(
+                    color = lineColor,
+                    radius = 20.dp.toPx(),
+                    center = Offset(x = positionX, y = positionY)
+                )
+
+                val paint = Paint().asFrameworkPaint().apply {
+                    textSize = 24.dp.toPx()
+                    color = Color.White.hashCode()
+                    textAlign = android.graphics.Paint.Align.CENTER
+                    typeface = Typeface.DEFAULT_BOLD
+                }
+
+                drawIntoCanvas {
+                    it.nativeCanvas.drawText(
+                        position.finger?.number.toString(),
+                        positionX,
+                        positionY + 8.dp.toPx(),
+                        paint
                     )
-
-                    val paint = Paint().asFrameworkPaint().apply {
-                        textSize = 24.dp.toPx()
-                        color = Color.White.hashCode()
-                        textAlign = android.graphics.Paint.Align.CENTER
-                        typeface = Typeface.DEFAULT_BOLD
-                    }
-
-                    drawIntoCanvas {
-                        it.nativeCanvas.drawText(
-                            position.finger?.number.toString(),
-                            positionX,
-                            positionY + 8.dp.toPx(),
-                            paint
-                        )
-                    }
                 }
             }
+            //endregion
+
+            // region draw open strings
+            positions.filter { it.string < strings && it.fret == startingFret }
+                .forEach { position ->
+
+                }
             //endregion
         }
     }
