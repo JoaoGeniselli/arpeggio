@@ -12,7 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun Rect(
+internal fun Rect(
     modifier: Modifier = Modifier,
     color: Color = Color.Black
 ) {

@@ -2,7 +2,6 @@ package com.dosei.music.arpeggio
 
 import android.graphics.Typeface
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -12,9 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -32,6 +31,7 @@ fun Chord(
     strings: Int = 6,
     frets: Int = 4,
     startingFret: Int = 0,
+    colors: ChordColors = ChordColors(),
     strokeWidth: Dp = WIDTH_STROKE
 ) {
     val gridPadding = 30.dp
@@ -42,13 +42,14 @@ fun Chord(
             .padding(16.dp)
     ) {
         Text(
-            color = Color.Black,
+            color = colors.text,
             text = name,
             fontSize = 40.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.align(CenterHorizontally)
         )
         Rect(
+            color = colors.grid,
             modifier = Modifier
                 .height(16.dp)
                 .padding(horizontal = gridPadding - (strokeWidth / 2))
@@ -58,6 +59,7 @@ fun Chord(
                 .padding(horizontal = gridPadding)
                 .weight(1f),
             positions = positions,
+            colors = colors,
             strings = strings,
             frets = frets
         )
@@ -72,7 +74,8 @@ fun Chord(
                     modifier = Modifier
                         .weight(1f)
                         .height(height = 32.dp),
-                    canBePlayed = canBePlayed
+                    canBePlayed = canBePlayed,
+                    color = colors.position
                 )
             }
         }
@@ -80,18 +83,9 @@ fun Chord(
 }
 
 @Composable
-fun StringIndicator(
-    modifier: Modifier = Modifier,
-    canBePlayed: Boolean
-) {
-    val resource = if (canBePlayed) R.drawable.ic_circle_48 else R.drawable.ic_cross_48
-    Image(modifier = modifier, painter = painterResource(id = resource), contentDescription = "")
-}
-
-@Composable
 private fun Grid(
     modifier: Modifier = Modifier,
-    lineColor: Color = Color.Black,
+    colors: ChordColors,
     frets: Int = 4,
     strings: Int = 6,
     strokeWidth: Dp = WIDTH_STROKE,
@@ -102,66 +96,106 @@ private fun Grid(
     Canvas(modifier = modifier.fillMaxSize()) {
         val strokeWidthInPxs = strokeWidth.toPx()
 
-        //region Draw frets
         val fretHeight = size.height / frets
-        var fretY = 0f
-        val fretStartX = strokeWidth.toPx() / 2f * -1
-        val fretEndX = size.width + strokeWidth.toPx() / 2f
-        for (index in 0..frets.inc()) {
-            drawLine(
-                color = lineColor,
-                start = Offset(x = fretStartX, y = fretY),
-                end = Offset(x = fretEndX, y = fretY),
-                strokeWidth = strokeWidthInPxs
-            )
-            fretY += fretHeight
-        }
-        //endregion
-
-        //region Draw lines
+        drawFrets(
+            frets = frets,
+            height = fretHeight,
+            color = colors.grid,
+            strokeWidth = strokeWidthInPxs
+        )
 
         val stringWidth = size.width / strings.dec()
-        var lineX = 0f
-        for (index in 0 until strings) {
-            drawLine(
-                color = lineColor,
-                start = Offset(x = lineX, y = 0f),
-                end = Offset(x = lineX, y = size.height),
-                strokeWidth = strokeWidthInPxs
+        drawStrings(
+            stringAmount = strings,
+            width = stringWidth,
+            color = colors.grid,
+            strokeWidth = strokeWidthInPxs
+        )
+
+        drawPositions(
+            positionColor = colors.position,
+            textColor = colors.positionText,
+            positions = positions,
+            strings = strings,
+            startingFret = startingFret,
+            fretHeight = fretHeight,
+            stringWidth = stringWidth
+        )
+    }
+}
+
+private fun DrawScope.drawFrets(
+    frets: Int,
+    height: Float,
+    color: Color,
+    strokeWidth: Float
+) {
+    var fretY = 0f
+    val fretStartX = strokeWidth / 2f * -1
+    val fretEndX = size.width + strokeWidth / 2f
+    for (index in 0..frets.inc()) {
+        drawLine(
+            color = color,
+            start = Offset(x = fretStartX, y = fretY),
+            end = Offset(x = fretEndX, y = fretY),
+            strokeWidth = strokeWidth
+        )
+        fretY += height
+    }
+}
+
+private fun DrawScope.drawStrings(
+    stringAmount: Int,
+    color: Color,
+    width: Float,
+    strokeWidth: Float
+) {
+    var lineX = 0f
+    for (index in 0 until stringAmount) {
+        drawLine(
+            color = color,
+            start = Offset(x = lineX, y = 0f),
+            end = Offset(x = lineX, y = size.height),
+            strokeWidth = strokeWidth
+        )
+        lineX += width
+    }
+}
+
+private fun DrawScope.drawPositions(
+    positionColor: Color,
+    textColor: Color,
+    positions: List<Position>,
+    strings: Int,
+    startingFret: Int,
+    fretHeight: Float,
+    stringWidth: Float
+) {
+    val paint = Paint().asFrameworkPaint().apply {
+        textSize = 24.dp.toPx()
+        color = textColor.hashCode()
+        textAlign = android.graphics.Paint.Align.CENTER
+        typeface = Typeface.DEFAULT_BOLD
+    }
+
+    positions.filter { it.string < strings && it.fret > startingFret }.forEach { position ->
+        val fretMultiplier = position.fret
+        val positionY = fretMultiplier * fretHeight - (fretHeight / 2f)
+        val positionX = position.string * stringWidth
+
+        drawCircle(
+            color = positionColor,
+            radius = 20.dp.toPx(),
+            center = Offset(x = positionX, y = positionY)
+        )
+        drawIntoCanvas {
+            it.nativeCanvas.drawText(
+                position.finger?.number.toString(),
+                positionX,
+                positionY + 8.dp.toPx(),
+                paint
             )
-            lineX += stringWidth
         }
-        //endregion
-
-        //region Draw positions
-        positions.filter { it.string < strings && it.fret > startingFret }.forEach { position ->
-            val fretMultiplier = position.fret
-            val positionY = fretMultiplier * fretHeight - (fretHeight / 2f)
-            val positionX = position.string * stringWidth
-
-            drawCircle(
-                color = lineColor,
-                radius = 20.dp.toPx(),
-                center = Offset(x = positionX, y = positionY)
-            )
-
-            val paint = Paint().asFrameworkPaint().apply {
-                textSize = 24.dp.toPx()
-                color = Color.White.hashCode()
-                textAlign = android.graphics.Paint.Align.CENTER
-                typeface = Typeface.DEFAULT_BOLD
-            }
-
-            drawIntoCanvas {
-                it.nativeCanvas.drawText(
-                    position.finger?.number.toString(),
-                    positionX,
-                    positionY + 8.dp.toPx(),
-                    paint
-                )
-            }
-        }
-        //endregion
     }
 }
 
@@ -170,14 +204,19 @@ private fun Grid(
 fun PreviewChord() {
     Surface(modifier = Modifier.fillMaxSize(), color = Color.White) {
         Chord(
-            name = "G",
+            name = "C",
+            colors = ChordColors(
+                text = Color.DarkGray,
+                grid = Color.Black,
+                position = Color.DarkGray,
+                positionText = Color.White
+            ),
             positions = listOf(
-                Position(0, 3, Middle),
-                Position(1, 2, Index),
-                Position.openString(2),
+                Position(1, 3, Ring),
+                Position(2, 2, Middle),
                 Position.openString(3),
-                Position(4, 3, Ring),
-                Position(5, 3, Pinky),
+                Position(4, 1, Index),
+                Position.openString(5)
             )
         )
     }
