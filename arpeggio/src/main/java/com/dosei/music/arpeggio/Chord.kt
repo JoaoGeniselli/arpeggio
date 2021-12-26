@@ -31,10 +31,10 @@ fun Chord(
     positions: List<Position>,
     strings: Int = 6,
     frets: Int = 4,
-    startingFret: Int = 0
+    startingFret: Int = 0,
+    strokeWidth: Dp = WIDTH_STROKE
 ) {
-    val positionSize = 32.dp
-    val gridPadding = 28.dp
+    val gridPadding = 30.dp
 
     Column(
         modifier = modifier
@@ -51,7 +51,7 @@ fun Chord(
         Rect(
             modifier = Modifier
                 .height(16.dp)
-                .padding(horizontal = gridPadding - 2.dp)
+                .padding(horizontal = gridPadding - (strokeWidth / 2))
         )
         Grid(
             modifier = Modifier
@@ -61,15 +61,17 @@ fun Chord(
             strings = strings,
             frets = frets
         )
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 8.dp)) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp)
+        ) {
             for (string in 0 until strings) {
                 val canBePlayed = positions.any { it.string == string }
                 StringIndicator(
                     modifier = Modifier
                         .weight(1f)
-                        .height(height = positionSize),
+                        .height(height = 32.dp),
                     canBePlayed = canBePlayed
                 )
             }
@@ -92,21 +94,24 @@ private fun Grid(
     lineColor: Color = Color.Black,
     frets: Int = 4,
     strings: Int = 6,
-    strokeWidth: Dp = 3.dp,
+    strokeWidth: Dp = WIDTH_STROKE,
     startingFret: Int = 0,
+    positionSize: Dp = 40.dp,
     positions: List<Position>
 ) {
     Canvas(modifier = modifier.fillMaxSize()) {
         val strokeWidthInPxs = strokeWidth.toPx()
 
         //region Draw frets
-        val fretHeight = size.height / frets.inc()
+        val fretHeight = size.height / frets
         var fretY = 0f
-        for (index in 0..frets + 1) {
+        val fretStartX = strokeWidth.toPx() / 2f * -1
+        val fretEndX = size.width + strokeWidth.toPx() / 2f
+        for (index in 0..frets.inc()) {
             drawLine(
                 color = lineColor,
-                start = Offset(x = 0f, y = fretY),
-                end = Offset(x = size.width, y = fretY),
+                start = Offset(x = fretStartX, y = fretY),
+                end = Offset(x = fretEndX, y = fretY),
                 strokeWidth = strokeWidthInPxs
             )
             fretY += fretHeight
@@ -114,11 +119,10 @@ private fun Grid(
         //endregion
 
         //region Draw lines
-        val stringLinesToDraw = strings - 2
 
-        val stringWidth = size.width / stringLinesToDraw.inc()
+        val stringWidth = size.width / strings.dec()
         var lineX = 0f
-        for (index in 0..stringLinesToDraw + 1) {
+        for (index in 0 until strings) {
             drawLine(
                 color = lineColor,
                 start = Offset(x = lineX, y = 0f),
@@ -130,97 +134,34 @@ private fun Grid(
         //endregion
 
         //region Draw positions
-            positions.filter { it.string < strings && it.fret > startingFret }.forEach { position ->
-                val fretMultiplier = position.fret
-                val positionY = fretMultiplier * fretHeight - (fretHeight / 2f)
-                val positionX = position.string * stringWidth
+        positions.filter { it.string < strings && it.fret > startingFret }.forEach { position ->
+            val fretMultiplier = position.fret
+            val positionY = fretMultiplier * fretHeight - (fretHeight / 2f)
+            val positionX = position.string * stringWidth
 
-                drawCircle(
-                    color = lineColor,
-                    radius = 20.dp.toPx(),
-                    center = Offset(x = positionX, y = positionY)
-                )
+            drawCircle(
+                color = lineColor,
+                radius = 20.dp.toPx(),
+                center = Offset(x = positionX, y = positionY)
+            )
 
-                val paint = Paint().asFrameworkPaint().apply {
-                    textSize = 24.dp.toPx()
-                    color = Color.White.hashCode()
-                    textAlign = android.graphics.Paint.Align.CENTER
-                    typeface = Typeface.DEFAULT_BOLD
-                }
-
-                drawIntoCanvas {
-                    it.nativeCanvas.drawText(
-                        position.finger?.number.toString(),
-                        positionX,
-                        positionY + 8.dp.toPx(),
-                        paint
-                    )
-                }
+            val paint = Paint().asFrameworkPaint().apply {
+                textSize = 24.dp.toPx()
+                color = Color.White.hashCode()
+                textAlign = android.graphics.Paint.Align.CENTER
+                typeface = Typeface.DEFAULT_BOLD
             }
-        //endregion
 
-        // region draw open strings
-//            positions.filter { it.string < strings && it.fret == startingFret }
-//                .forEach { position ->
-//
-//                }
-        //endregion
-    }
-}
-
-@Composable
-private fun NewGrid(
-    modifier: Modifier = Modifier,
-    lineColor: Color = Color.Black,
-    frets: Int = 4,
-    strings: Int = 6,
-    strokeWidth: Dp = WIDTH_STROKE
-) {
-    VerticalGrid(
-        modifier = modifier,
-        lineColor = lineColor,
-        frets = frets,
-        strings = strings,
-        strokeWidth = strokeWidth
-    )
-}
-
-@Composable
-private fun VerticalGrid(
-    modifier: Modifier = Modifier,
-    lineColor: Color = Color.Black,
-    frets: Int = 4,
-    strings: Int = 6,
-    strokeWidth: Dp = WIDTH_STROKE
-) {
-    Canvas(modifier = modifier.fillMaxSize()) {
-        val strokeWidthInPxs = strokeWidth.toPx()
-
-        val fretHeight = size.height / frets.inc()
-        var fretY = 0f
-        for (index in 0..frets + 1) {
-            drawLine(
-                color = lineColor,
-                start = Offset(x = 0f, y = fretY),
-                end = Offset(x = size.width, y = fretY),
-                strokeWidth = strokeWidthInPxs
-            )
-            fretY += fretHeight
+            drawIntoCanvas {
+                it.nativeCanvas.drawText(
+                    position.finger?.number.toString(),
+                    positionX,
+                    positionY + 8.dp.toPx(),
+                    paint
+                )
+            }
         }
-
-        val stringLinesToDraw = strings - 2
-
-        val stringWidth = size.width / stringLinesToDraw.inc()
-        var lineX = 0f
-        for (index in 0..stringLinesToDraw + 1) {
-            drawLine(
-                color = lineColor,
-                start = Offset(x = lineX, y = 0f),
-                end = Offset(x = lineX, y = size.height),
-                strokeWidth = strokeWidthInPxs
-            )
-            lineX += stringWidth
-        }
+        //endregion
     }
 }
 
@@ -229,7 +170,7 @@ private fun VerticalGrid(
 fun PreviewChord() {
     Surface(modifier = Modifier.fillMaxSize(), color = Color.White) {
         Chord(
-            name = "E#",
+            name = "G",
             positions = listOf(
                 Position(0, 3, Middle),
                 Position(1, 2, Index),
