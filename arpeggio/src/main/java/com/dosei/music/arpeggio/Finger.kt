@@ -1,8 +1,8 @@
 package com.dosei.music.arpeggio
 
 enum class Finger(val number: Int) {
-    INDEX(1),
-    MIDDLE(2),
-    RING(3),
-    PINKY(4),
+    Index(1),
+    Middle(2),
+    Ring(3),
+    Pinky(4),
 }
