@@ -6,6 +6,7 @@ data class Position(
     val finger: Finger?,
     val barre: IntRange? = null
 ) {
+    val isOpenString = fret == 0
 
     companion object {
         fun openString(string: Int) = Position(

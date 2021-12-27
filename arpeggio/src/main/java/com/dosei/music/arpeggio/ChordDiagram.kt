@@ -24,14 +24,14 @@ import com.dosei.music.arpeggio.Finger.*
 private val WIDTH_STROKE = 3.dp
 
 @Composable
-fun Chord(
+fun ChordDiagram(
     modifier: Modifier = Modifier,
     name: String,
     positions: List<Position>,
     strings: Int = 6,
     frets: Int = 4,
     startingFret: Int = 0,
-    colors: ChordColors = ChordColors(),
+    colors: Colors = Colors(),
     strokeWidth: Dp = WIDTH_STROKE
 ) {
     val gridPadding = 30.dp
@@ -54,15 +54,25 @@ fun Chord(
                 .height(16.dp)
                 .padding(horizontal = gridPadding - (strokeWidth / 2))
         )
-        Grid(
+        GenericGrid(
             modifier = Modifier
                 .padding(horizontal = gridPadding)
                 .weight(1f),
-            positions = positions,
-            colors = colors,
             strings = strings,
-            frets = frets
-        )
+            frets = frets,
+            strokeWidth = WIDTH_STROKE,
+            color = colors.grid
+        ) {
+            positions.forEach { position ->
+                if (position.isOpenString.not()) {
+                    drawPositionAt(
+                        finger = position.finger,
+                        string = position.string,
+                        fret = position.fret
+                    )
+                }
+            }
+        }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -85,7 +95,7 @@ fun Chord(
 @Composable
 private fun Grid(
     modifier: Modifier = Modifier,
-    colors: ChordColors,
+    colors: Colors,
     frets: Int = 4,
     strings: Int = 6,
     strokeWidth: Dp = WIDTH_STROKE,
@@ -133,7 +143,7 @@ private fun DrawScope.drawFrets(
     var fretY = 0f
     val fretStartX = strokeWidth / 2f * -1
     val fretEndX = size.width + strokeWidth / 2f
-    for (index in 0..frets.inc()) {
+    for (index in 0..frets) {
         drawLine(
             color = color,
             start = Offset(x = fretStartX, y = fretY),
@@ -203,9 +213,9 @@ private fun DrawScope.drawPositions(
 @Composable
 fun PreviewChord() {
     Surface(modifier = Modifier.fillMaxSize(), color = Color.White) {
-        Chord(
+        ChordDiagram(
             name = "C",
-            colors = ChordColors(
+            colors = Colors(
                 text = Color.DarkGray,
                 grid = Color.Black,
                 position = Color.DarkGray,
