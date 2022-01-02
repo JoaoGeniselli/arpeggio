@@ -11,7 +11,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.DrawStyle
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
@@ -25,7 +24,7 @@ fun GenericGrid(
     frets: Int,
     strokeWidth: Dp,
     modifier: Modifier = Modifier,
-    color: Color,
+    colors: Colors,
     content: GridScope.() -> Unit
 ) {
     Canvas(modifier = modifier.fillMaxSize()) {
@@ -35,7 +34,7 @@ fun GenericGrid(
 
         drawRect(
             style = Stroke(width = strokeWidthInPxs),
-            color = color,
+            color = colors.grid,
             topLeft = Offset.Zero,
             size = size
         )
@@ -43,7 +42,7 @@ fun GenericGrid(
         var fretY = fretSize
         for (index in 1 until frets) {
             drawLine(
-                color = color,
+                color = colors.grid,
                 start = Offset(x = 0f, y = fretY),
                 end = Offset(x = size.width, y = fretY),
                 strokeWidth = strokeWidthInPxs
@@ -54,7 +53,7 @@ fun GenericGrid(
         var stringX = stringSize
         for (index in 1 until strings) {
             drawLine(
-                color = color,
+                color = colors.grid,
                 start = Offset(x = stringX, y = 0f),
                 end = Offset(x = stringX, y = size.height),
                 strokeWidth = strokeWidthInPxs
@@ -66,8 +65,8 @@ fun GenericGrid(
             stringSize = stringSize,
             fretSize = fretSize,
             drawScope = this,
-            positionColor = Color.Black,
-            textColor = Color.White
+            positionColor = colors.position,
+            textColor = colors.positionText
         )
         content(scope)
     }
@@ -121,7 +120,7 @@ fun PreviewGenericGrid() {
             strings = 6,
             frets = 4,
             strokeWidth = 3.dp,
-            color = Color.Black
+            colors = Colors()
         ) {
             drawPositionAt(
                 finger = Finger.Ring,

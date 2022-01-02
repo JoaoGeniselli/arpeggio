@@ -36,35 +36,41 @@ fun ChordDiagram(
 ) {
     val gridPadding = 30.dp
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
+    Row {
         Text(
             color = colors.text,
-            text = name,
+            text = "5ª",
             fontSize = 40.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.align(CenterHorizontally)
+            modifier = Modifier.padding(top = 50.dp)
         )
-        Rect(
-            color = colors.grid,
-            modifier = Modifier
-                .height(16.dp)
-                .padding(horizontal = gridPadding - (strokeWidth / 2))
-        )
-        GenericGrid(
-            modifier = Modifier
-                .padding(horizontal = gridPadding)
-                .weight(1f),
-            strings = strings,
-            frets = frets,
-            strokeWidth = WIDTH_STROKE,
-            color = colors.grid
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(16.dp)
         ) {
-            positions.forEach { position ->
-                if (position.isOpenString.not()) {
+            Text(
+                color = colors.text,
+                text = name,
+                fontSize = 40.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.align(CenterHorizontally)
+            )
+            Rect(
+                color = colors.grid,
+                modifier = Modifier
+                    .height(16.dp)
+                    .padding(horizontal = gridPadding - (strokeWidth / 2))
+            )
+            GenericGrid(
+                modifier = Modifier
+                    .padding(horizontal = gridPadding)
+                    .weight(1f),
+                strings = strings,
+                frets = frets,
+                strokeWidth = WIDTH_STROKE,
+                colors = colors
+            ) {
+                positions.forEach { position ->
                     drawPositionAt(
                         finger = position.finger,
                         string = position.string,
@@ -72,24 +78,25 @@ fun ChordDiagram(
                     )
                 }
             }
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp)
-        ) {
-            for (string in 0 until strings) {
-                val canBePlayed = positions.any { it.string == string }
-                StringIndicator(
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(height = 32.dp),
-                    canBePlayed = canBePlayed,
-                    color = colors.position
-                )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp)
+            ) {
+                for (string in 0 until strings) {
+                    val canBePlayed = positions.any { it.string == string }
+                    StringIndicator(
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(height = 32.dp),
+                        canBePlayed = canBePlayed,
+                        color = colors.position
+                    )
+                }
             }
         }
     }
+
 }
 
 @Composable
@@ -216,9 +223,9 @@ fun PreviewChord() {
         ChordDiagram(
             name = "C",
             colors = Colors(
-                text = Color.DarkGray,
+                text = Color.Green,
                 grid = Color.Black,
-                position = Color.DarkGray,
+                position = Color.Red,
                 positionText = Color.White
             ),
             positions = listOf(
