@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.sp
 fun ThumbnailChordDiagram(
     modifier: Modifier = Modifier,
     name: String,
-    positions: List<Position>,
+    positions: List<LegacyPosition>,
     strings: Int = 6,
     frets: Int = 4,
     startingFret: Int = 0,
@@ -177,11 +177,11 @@ private fun PreviewChordThumbnail() {
                 positionText = Color.White
             ),
             positions = listOf(
-                Position(1, 3, Finger.Ring),
-                Position(2, 2, Finger.Middle),
-                Position.openString(3),
-                Position(4, 1, Finger.Index),
-                Position.openString(5)
+                LegacyPosition(1, 3, Finger.Ring),
+                LegacyPosition(2, 2, Finger.Middle),
+                LegacyPosition.openString(3),
+                LegacyPosition(4, 1, Finger.Index),
+                LegacyPosition.openString(5)
             )
         )
     }

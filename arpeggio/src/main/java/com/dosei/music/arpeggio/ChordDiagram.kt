@@ -27,7 +27,7 @@ private val WIDTH_STROKE = 3.dp
 fun ChordDiagram(
     modifier: Modifier = Modifier,
     name: String,
-    positions: List<Position>,
+    positions: List<LegacyPosition>,
     strings: Int = 6,
     frets: Int = 4,
     startingFret: Int = 0,
@@ -108,7 +108,7 @@ private fun Grid(
     strokeWidth: Dp = WIDTH_STROKE,
     startingFret: Int = 0,
     positionSize: Dp = 40.dp,
-    positions: List<Position>
+    positions: List<LegacyPosition>
 ) {
     Canvas(modifier = modifier.fillMaxSize()) {
         val strokeWidthInPxs = strokeWidth.toPx()
@@ -182,7 +182,7 @@ private fun DrawScope.drawStrings(
 private fun DrawScope.drawPositions(
     positionColor: Color,
     textColor: Color,
-    positions: List<Position>,
+    positions: List<LegacyPosition>,
     strings: Int,
     startingFret: Int,
     fretHeight: Float,
@@ -229,11 +229,11 @@ fun PreviewChord() {
                 positionText = Color.White
             ),
             positions = listOf(
-                Position(1, 3, Ring),
-                Position(2, 2, Middle),
-                Position.openString(3),
-                Position(4, 1, Index),
-                Position.openString(5)
+                LegacyPosition(1, 3, Ring),
+                LegacyPosition(2, 2, Middle),
+                LegacyPosition.openString(3),
+                LegacyPosition(4, 1, Index),
+                LegacyPosition.openString(5)
             )
         )
     }
