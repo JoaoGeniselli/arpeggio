@@ -4,6 +4,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 
 data class Geometry(
+    val strokeWidth: Float,
     val fretSpaceHeight: Float,
     val stringSpaceWidth: Float,
     val canvasSize: Size,
@@ -23,5 +24,40 @@ data class Geometry(
 
     fun centerOfString(string: Int): Float {
         return stringSpaceWidth * string + inset
+    }
+
+    fun centerOfStringIndicator(string: Int): Offset {
+        return Offset(
+            x = centerOfString(string),
+            y = canvasSize.height - positionSize / 2f
+        )
+    }
+
+    fun topLeftOfStringIndicator(string: Int): Offset {
+        return Offset(
+            x = centerOfString(string) - positionSize / 2f + strokeWidth,
+            y = canvasSize.height - positionSize + strokeWidth
+        )
+    }
+
+    fun topRightOfStringIndicator(string: Int): Offset {
+        return Offset(
+            x = centerOfString(string) + positionSize / 2f - strokeWidth,
+            y = canvasSize.height - positionSize + strokeWidth
+        )
+    }
+
+    fun bottomLeftOfStringIndicator(string: Int): Offset {
+        return Offset(
+            x = centerOfString(string) - positionSize / 2f + strokeWidth,
+            y = canvasSize.height - strokeWidth
+        )
+    }
+
+    fun bottomRightOfStringIndicator(string: Int): Offset {
+        return Offset(
+            x = centerOfString(string) + positionSize / 2f - strokeWidth,
+            y = canvasSize.height - strokeWidth
+        )
     }
 }

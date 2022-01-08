@@ -12,6 +12,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.inset
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -28,7 +29,12 @@ fun GridTop(
         inset(horizontal = inset - strokeWidth.toPx()) {
             drawRect(gridColor, size = Size(width = size.width, height = inset))
         }
-        inset(inset) {
+        inset(
+            left = inset,
+            right = inset,
+            top = inset,
+            bottom = inset * 2 + 8.dp.toPx()
+        ) {
             drawGrid(
                 geometry.stringSpaceWidth,
                 geometry.fretSpaceHeight
@@ -67,12 +73,39 @@ class GridTopScope(
     private val stringUsage = (0 until strings).map { it to false }.toMap().toMutableMap()
     private var initialFret = 0
 
+
     fun commit() {
         if (initialFret != 0) {
             // TODO("DRAW INITIAL FRET INDICATOR")
         }
         stringUsage.forEach { entry ->
-            // TODO("DRAW INDICATORS")
+            val string = entry.key
+            val isUsed = entry.value
+            if (isUsed) {
+                drawScope.run {
+                    drawCircle(
+                        color = positionColor,
+                        style = Stroke(width = strokeWidth.toPx()),
+                        radius = (positionSize.toPx() / 2f) - strokeWidth.toPx(),
+                        center = geometry.centerOfStringIndicator(string)
+                    )
+                }
+            } else {
+                drawScope.run {
+                    drawLine(
+                        color = positionColor,
+                        strokeWidth = strokeWidth.toPx(),
+                        start = geometry.topLeftOfStringIndicator(string),
+                        end = geometry.bottomRightOfStringIndicator(string)
+                    )
+                    drawLine(
+                        color = positionColor,
+                        strokeWidth = strokeWidth.toPx(),
+                        start = geometry.bottomLeftOfStringIndicator(string),
+                        end = geometry.topRightOfStringIndicator(string)
+                    )
+                }
+            }
         }
     }
 

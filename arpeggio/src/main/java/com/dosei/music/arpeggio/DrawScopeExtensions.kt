@@ -13,9 +13,10 @@ import androidx.compose.ui.unit.dp
 internal fun DrawScope.extractGeometry(inset: Float): Geometry {
     val gridSize = Size(
         width = size.width - positionSize.toPx(),
-        height = size.height - positionSize.toPx()
+        height = size.height - (positionSize.toPx() * 1.5f + 8.dp.toPx())
     )
     return Geometry(
+        strokeWidth = strokeWidth.toPx(),
         fretSpaceHeight = gridSize.height / frets,
         stringSpaceWidth = gridSize.width / strings.dec(),
         canvasSize = size,
