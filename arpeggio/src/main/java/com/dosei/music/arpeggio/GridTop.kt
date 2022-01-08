@@ -70,13 +70,8 @@ class GridTopScope(
     private val drawScope: DrawScope
 ) {
     private val stringUsage = (0 until strings).map { it to false }.toMap().toMutableMap()
-    private var initialFret = 0
-
 
     fun commit() {
-        if (initialFret != 0) {
-            // TODO("DRAW INITIAL FRET INDICATOR")
-        }
         stringUsage.forEach { entry ->
             val string = entry.key
             val isUsed = entry.value
@@ -119,8 +114,6 @@ class GridTopScope(
                 stringCenter = geometry.centerOfString(barre.strings.first)
             )
         }
-
-        initialFret = max(initialFret, barre.fret)
         stringUsage.putAll(barre.strings.map { it to true })
     }
 
@@ -140,7 +133,6 @@ class GridTopScope(
                 stringCenter = stringCenter
             )
         }
-        initialFret = max(initialFret, position.fret)
         stringUsage[position.string] = true
     }
 
