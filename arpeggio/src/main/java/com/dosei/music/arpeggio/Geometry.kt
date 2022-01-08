@@ -40,20 +40,6 @@ data class Geometry(
         )
     }
 
-    fun topRightOfStringIndicator(string: Int): Offset {
-        return Offset(
-            x = centerOfString(string) + positionSize / 2f - strokeWidth,
-            y = canvasSize.height - positionSize + strokeWidth
-        )
-    }
-
-    fun bottomLeftOfStringIndicator(string: Int): Offset {
-        return Offset(
-            x = centerOfString(string) - positionSize / 2f + strokeWidth,
-            y = canvasSize.height - strokeWidth
-        )
-    }
-
     fun bottomRightOfStringIndicator(string: Int): Offset {
         return Offset(
             x = centerOfString(string) + positionSize / 2f - strokeWidth,
