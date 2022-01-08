@@ -83,26 +83,15 @@ class GridTopScope(
             val isUsed = entry.value
             if (isUsed) {
                 drawScope.run {
-                    drawCircle(
-                        color = positionColor,
-                        style = Stroke(width = strokeWidth.toPx()),
-                        radius = (positionSize.toPx() / 2f) - strokeWidth.toPx(),
-                        center = geometry.centerOfStringIndicator(string)
+                    drawOpenStringIndicator(
+                        geometry.centerOfStringIndicator(string)
                     )
                 }
             } else {
                 drawScope.run {
-                    drawLine(
-                        color = positionColor,
-                        strokeWidth = strokeWidth.toPx(),
-                        start = geometry.topLeftOfStringIndicator(string),
-                        end = geometry.bottomRightOfStringIndicator(string)
-                    )
-                    drawLine(
-                        color = positionColor,
-                        strokeWidth = strokeWidth.toPx(),
-                        start = geometry.bottomLeftOfStringIndicator(string),
-                        end = geometry.topRightOfStringIndicator(string)
+                    drawClosedStringIndicator(
+                        geometry.topLeftOfStringIndicator(string),
+                        geometry.bottomRightOfStringIndicator(string)
                     )
                 }
             }

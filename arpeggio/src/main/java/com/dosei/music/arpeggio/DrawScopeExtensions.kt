@@ -97,3 +97,32 @@ fun DrawScope.drawFingerIndicator(
         )
     }
 }
+
+fun DrawScope.drawClosedStringIndicator(
+    start: Offset,
+    end: Offset
+) {
+    drawLine(
+        color = positionColor,
+        strokeWidth = strokeWidth.toPx(),
+        start = start,
+        end = end
+    )
+    drawLine(
+        color = positionColor,
+        strokeWidth = strokeWidth.toPx(),
+        start = Offset(x = start.x, y = end.y),
+        end = Offset(x = end.x, y = start.y)
+    )
+}
+
+fun DrawScope.drawOpenStringIndicator(
+    center: Offset
+) {
+    drawCircle(
+        color = positionColor,
+        style = Stroke(width = strokeWidth.toPx()),
+        radius = (positionSize.toPx() / 2f) - strokeWidth.toPx(),
+        center = center
+    )
+}
