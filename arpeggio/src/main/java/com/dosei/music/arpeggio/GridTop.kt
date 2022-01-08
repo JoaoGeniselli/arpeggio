@@ -15,11 +15,11 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.inset
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import kotlin.math.max
 
 @Composable
 fun GridTop(
     modifier: Modifier = Modifier,
+    initialFret: Int = 1,
     scope: GridTopScope.() -> Unit
 ) {
     Canvas(modifier = modifier.fillMaxSize()) {
@@ -39,7 +39,7 @@ fun GridTop(
                 geometry.fretSpaceHeight
             )
         }
-        GridTopScope(geometry, this)
+        GridTopScope(initialFret, geometry, this)
             .apply(scope)
             .commit()
     }
@@ -66,10 +66,12 @@ fun DrawScope.drawBarre(
 }
 
 class GridTopScope(
-    private val geometry: Geometry,
+    initialFret: Int,
+    val geometry: Geometry,
     private val drawScope: DrawScope
 ) {
     private val stringUsage = (0 until strings).map { it to false }.toMap().toMutableMap()
+    private val fretDiff = initialFret.dec()
 
     fun commit() {
         stringUsage.forEach { entry ->
@@ -104,13 +106,13 @@ class GridTopScope(
         drawScope.drawBarre(
             initialStringCenter = geometry.centerOfString(barre.strings.first),
             finalStringCenter = geometry.centerOfString(barre.strings.last),
-            fretCenter = geometry.centerOfFret(barre.fret)
+            fretCenter = geometry.centerOfFret(barre.fret.adjusted())
         )
 
         barre.finger?.let {
             drawScope.drawFingerIndicator(
                 finger = it,
-                fretCenter = geometry.centerOfFret(barre.fret),
+                fretCenter = geometry.centerOfFret(barre.fret.adjusted()),
                 stringCenter = geometry.centerOfString(barre.strings.first)
             )
         }
@@ -118,7 +120,7 @@ class GridTopScope(
     }
 
     fun draw(position: Position) {
-        val fretCenter = geometry.centerOfFret(position.fret)
+        val fretCenter = geometry.centerOfFret(position.fret.adjusted())
         val stringCenter = geometry.centerOfString(position.string)
 
         drawScope.drawPosition(
@@ -139,6 +141,8 @@ class GridTopScope(
     fun draw(openString: OpenString) {
         stringUsage[openString.string] = true
     }
+
+    private fun Int.adjusted(): Int = minus(fretDiff)
 }
 
 @Preview(showBackground = true)
@@ -146,18 +150,20 @@ class GridTopScope(
 private fun PreviewChordThumbnail() {
     Surface(modifier = Modifier.size(600.dp), color = Color.White) {
         GridTop(
-            modifier = Modifier.padding(50.dp)
-        ) {
-            draw(
-                Barre(
-                    fret = 2,
-                    strings = 1..5,
-                    finger = Finger.Index
+            modifier = Modifier.padding(50.dp),
+            scope = {
+                draw(
+                    Barre(
+                        fret = 7,
+                        strings = 1..5,
+                        finger = Finger.Index
+                    )
                 )
-            )
-            draw(Position(fret = 3, string = 4, finger = Finger.Middle))
-            draw(Position(fret = 4, string = 3, finger = Finger.Pinky))
-            draw(Position(fret = 4, string = 2, finger = Finger.Ring))
-        }
+                draw(Position(fret = 3, string = 4, finger = Finger.Middle))
+                draw(Position(fret = 4, string = 3, finger = Finger.Pinky))
+                draw(Position(fret = 4, string = 2, finger = Finger.Ring))
+            },
+            initialFret = 7
+        )
     }
 }
