@@ -1,10 +1,12 @@
-package com.dosei.music.arpeggio
+package com.dosei.music.arpeggio.theme
 
 import androidx.compose.runtime.*
-import androidx.compose.ui.text.intl.Locale
+import com.dosei.music.arpeggio.DefaultFrets
+import com.dosei.music.arpeggio.DefaultInitialFret
+import com.dosei.music.arpeggio.DefaultStrings
 
 @Composable
-fun DiagramTheme(
+fun ArpeggioTheme(
     frets: Int = DefaultFrets,
     strings: Int = DefaultStrings,
     colors: Colors = Colors(),

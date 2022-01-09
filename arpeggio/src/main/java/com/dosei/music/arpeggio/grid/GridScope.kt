@@ -1,63 +1,14 @@
-package com.dosei.music.arpeggio
+package com.dosei.music.arpeggio.grid
 
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.inset
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-
-@Composable
-internal fun Grid(
-    modifier: Modifier = Modifier,
-    initialFret: Int = 1,
-    scope: GridScope.() -> Unit
-) {
-    val sizes = DiagramTheme.sizes
-    val colors = DiagramTheme.colors
-    val typography = DiagramTheme.typography
-    val frets = DiagramTheme.frets
-    val strings = DiagramTheme.strings
-
-    Canvas(modifier = modifier.fillMaxSize()) {
-        val inset = sizes.position.toPx() / 2f
-        val geometry = extractGeometry(
-            inset = inset,
-            positionSize = sizes.position,
-            strokeWidth = sizes.strokeWidth,
-            frets = frets,
-            strings = strings
-        )
-        inset(horizontal = inset - sizes.strokeWidth.toPx()) {
-            drawRect(colors.grid, size = Size(width = size.width, height = inset))
-        }
-        inset(
-            left = inset,
-            right = inset,
-            top = inset,
-            bottom = inset * 2 + 8.dp.toPx()
-        ) {
-            drawGrid(
-                frets = frets,
-                strings = strings,
-                columnWidth = geometry.stringSpaceWidth,
-                rowHeight = geometry.fretSpaceHeight,
-                color = colors.grid,
-                strokeWidth = sizes.strokeWidth
-            )
-        }
-        GridScope(initialFret, colors, geometry, sizes, typography, strings, this)
-            .apply(scope)
-            .commit()
-    }
-}
+import com.dosei.music.arpeggio.Barre
+import com.dosei.music.arpeggio.Component
+import com.dosei.music.arpeggio.OpenString
+import com.dosei.music.arpeggio.Position
+import com.dosei.music.arpeggio.canvas.*
+import com.dosei.music.arpeggio.theme.Colors
+import com.dosei.music.arpeggio.theme.Sizes
+import com.dosei.music.arpeggio.theme.Typography
 
 internal class GridScope(
     initialFret: Int,
@@ -156,27 +107,4 @@ internal class GridScope(
     }
 
     private fun Int.adjusted(): Int = minus(fretDiff)
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun PreviewChordThumbnail() {
-    Surface(modifier = Modifier.size(600.dp), color = Color.White) {
-        Grid(
-            modifier = Modifier.padding(50.dp),
-            scope = {
-                draw(
-                    Barre(
-                        fret = 7,
-                        strings = 1..5,
-                        finger = Finger.Index
-                    )
-                )
-                draw(Position(fret = 3, string = 4, finger = Finger.Middle))
-                draw(Position(fret = 4, string = 3, finger = Finger.Pinky))
-                draw(Position(fret = 4, string = 2, finger = Finger.Ring))
-            },
-            initialFret = 7
-        )
-    }
 }

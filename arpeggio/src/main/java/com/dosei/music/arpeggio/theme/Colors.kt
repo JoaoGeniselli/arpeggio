@@ -1,4 +1,4 @@
-package com.dosei.music.arpeggio
+package com.dosei.music.arpeggio.theme
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
@@ -8,7 +8,6 @@ class Colors(
     position: Color = Color.Black,
     stringUsageIndicator: Color = Color.Black
 ) {
-
     var grid by mutableStateOf(grid, structuralEqualityPolicy())
         internal set
     var position by mutableStateOf(position, structuralEqualityPolicy())
@@ -27,7 +26,7 @@ class Colors(
     )
 }
 
-fun Colors.updateColorsFrom(other: Colors) {
+internal fun Colors.updateColorsFrom(other: Colors) {
     this.grid = other.grid
     this.position = other.position
     this.stringUsageIndicator = other.stringUsageIndicator

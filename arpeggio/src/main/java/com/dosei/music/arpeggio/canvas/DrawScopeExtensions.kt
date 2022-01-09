@@ -1,4 +1,4 @@
-package com.dosei.music.arpeggio
+package com.dosei.music.arpeggio.canvas
 
 import android.graphics.Typeface
 import androidx.compose.ui.geometry.CornerRadius
@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import com.dosei.music.arpeggio.Finger
 
 internal fun DrawScope.extractGeometry(
     inset: Float,
@@ -79,7 +80,7 @@ internal fun DrawScope.drawVerticalLine(x: Float, color: Color, strokeWidth: Dp)
         strokeWidth = strokeWidth.toPx()
     )
 
-fun DrawScope.drawPosition(
+internal fun DrawScope.drawPosition(
     fretCenter: Float,
     stringLine: Float,
     color: Color,
@@ -92,7 +93,7 @@ fun DrawScope.drawPosition(
     )
 }
 
-fun DrawScope.drawFingerIndicator(
+internal fun DrawScope.drawFingerIndicator(
     finger: Finger,
     fretCenter: Float,
     stringCenter: Float,
@@ -117,7 +118,7 @@ fun DrawScope.drawFingerIndicator(
     }
 }
 
-fun DrawScope.drawClosedStringIndicator(
+internal fun DrawScope.drawClosedStringIndicator(
     start: Offset,
     end: Offset,
     color: Color,
@@ -137,7 +138,7 @@ fun DrawScope.drawClosedStringIndicator(
     )
 }
 
-fun DrawScope.drawOpenStringIndicator(
+internal fun DrawScope.drawOpenStringIndicator(
     center: Offset,
     color: Color,
     strokeWidth: Dp,
@@ -151,7 +152,7 @@ fun DrawScope.drawOpenStringIndicator(
     )
 }
 
-fun DrawScope.drawBarre(
+internal fun DrawScope.drawBarre(
     initialStringCenter: Float,
     finalStringCenter: Float,
     fretCenter: Float,

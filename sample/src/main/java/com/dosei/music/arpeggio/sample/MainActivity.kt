@@ -17,13 +17,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dosei.music.arpeggio.*
-import com.dosei.music.arpeggio.sample.ui.theme.ArpeggioTheme
+import com.dosei.music.arpeggio.sample.ui.theme.SampleTheme
+import com.dosei.music.arpeggio.theme.ArpeggioTheme
+import com.dosei.music.arpeggio.theme.Sizes
+import com.dosei.music.arpeggio.theme.Typography
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            ArpeggioTheme {
+            SampleTheme {
                 Content()
             }
         }
@@ -33,8 +36,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Content() {
     Surface(color = MaterialTheme.colors.background, modifier = Modifier.fillMaxSize()) {
-        DiagramTheme {
-            Diagram(
+        ArpeggioTheme {
+            ChordDiagram(
                 modifier = Modifier.padding(16.dp),
                 name = "Bm",
                 components = listOf(
@@ -51,7 +54,7 @@ fun Content() {
 fun GuitarThumbnailTheme(
     content: @Composable () -> Unit
 ) {
-    DiagramTheme(
+    ArpeggioTheme(
         typography = Typography(
             name = TextStyle().copy(fontSize = 14.sp),
             firstFretIndicator = TextStyle(fontSize = 14.sp),
@@ -66,7 +69,7 @@ fun GuitarThumbnailTheme(
 fun UkuleleThumbnailTheme(
     content: @Composable () -> Unit
 ) {
-    DiagramTheme(
+    ArpeggioTheme(
         frets = 4,
         strings = 4,
         typography = Typography(
@@ -82,7 +85,7 @@ fun UkuleleThumbnailTheme(
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    ArpeggioTheme {
+    SampleTheme {
         Content()
     }
 }
@@ -90,10 +93,10 @@ fun DefaultPreview() {
 @Preview(showBackground = true)
 @Composable
 fun PreviewGuitarThumbnail() {
-    ArpeggioTheme {
+    SampleTheme {
         Surface(color = MaterialTheme.colors.background, modifier = Modifier.size(220.dp, 200.dp)) {
             GuitarThumbnailTheme {
-                Diagram(
+                ChordDiagram(
                     modifier = Modifier.padding(8.dp),
                     name = "Bm",
                     components = listOf(
@@ -110,10 +113,10 @@ fun PreviewGuitarThumbnail() {
 @Preview(showBackground = true)
 @Composable
 fun PreviewUkuleleThumbnail() {
-    ArpeggioTheme {
+    SampleTheme {
         Surface(color = MaterialTheme.colors.background, modifier = Modifier.size(220.dp, 200.dp)) {
             UkuleleThumbnailTheme {
-                Diagram(
+                ChordDiagram(
                     modifier = Modifier.padding(8.dp),
                     name = "E",
                     components = listOf(

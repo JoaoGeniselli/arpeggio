@@ -1,4 +1,4 @@
-package com.dosei.music.arpeggio
+package com.dosei.music.arpeggio.theme
 
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.staticCompositionLocalOf

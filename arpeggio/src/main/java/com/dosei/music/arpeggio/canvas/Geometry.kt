@@ -1,9 +1,9 @@
-package com.dosei.music.arpeggio
+package com.dosei.music.arpeggio.canvas
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 
-data class Geometry(
+internal data class Geometry(
     val strokeWidth: Float,
     val fretSpaceHeight: Float,
     val stringSpaceWidth: Float,
