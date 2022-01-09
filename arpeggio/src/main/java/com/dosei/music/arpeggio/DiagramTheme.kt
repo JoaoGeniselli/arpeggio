@@ -1,15 +1,16 @@
 package com.dosei.music.arpeggio
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.ReadOnlyComposable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
+import androidx.compose.ui.text.intl.Locale
 
 @Composable
 fun DiagramTheme(
+    frets: Int = DefaultFrets,
+    strings: Int = DefaultStrings,
     colors: Colors = Colors(),
     typography: Typography = Typography(),
     sizes: Sizes = Sizes(),
+    formatInitialFret: FormatInitialFret = FormatInitialFret.enUs(),
     content: @Composable () -> Unit
 ) {
     val rememberedColors = remember { colors.copy() }.apply { updateColorsFrom(colors) }
@@ -17,9 +18,15 @@ fun DiagramTheme(
         LocalColors provides rememberedColors,
         LocalTypography provides typography.copy(),
         LocalSizes provides sizes.copy(),
+        LocalFormatInitialFret provides formatInitialFret,
+        LocalFrets provides frets,
+        LocalStrings provides strings,
         content = content
     )
 }
+
+internal val LocalFrets = staticCompositionLocalOf { DefaultFrets }
+internal val LocalStrings = staticCompositionLocalOf { DefaultStrings }
 
 object DiagramTheme {
 
@@ -37,4 +44,24 @@ object DiagramTheme {
         @Composable
         @ReadOnlyComposable
         get() = LocalSizes.current
+
+    val formatInitialFret: FormatInitialFret
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalFormatInitialFret.current
+
+    val frets: Int
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalFrets.current
+
+    val strings: Int
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalStrings.current
+
+    val initialFretRange: IntRange
+        @Composable
+        @ReadOnlyComposable
+        get() = DefaultInitialFret..frets
 }

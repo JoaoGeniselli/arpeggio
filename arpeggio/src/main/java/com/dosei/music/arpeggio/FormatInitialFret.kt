@@ -1,5 +1,7 @@
 package com.dosei.music.arpeggio
 
+import androidx.compose.runtime.ProvidableCompositionLocal
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -39,11 +41,16 @@ class PtBrFormatInitialFret : FormatInitialFret {
     override fun invoke(fret: Int): AnnotatedString =
         buildAnnotatedString {
             append(fret.toString())
-            withStyle(style = SpanStyle(
-                baselineShift = BaselineShift.Superscript,
-                textDecoration = TextDecoration.Underline
-            )) {
+            withStyle(
+                style = SpanStyle(
+                    baselineShift = BaselineShift.Superscript,
+                    textDecoration = TextDecoration.Underline
+                )
+            ) {
                 append("a")
             }
         }
 }
+
+internal val LocalFormatInitialFret: ProvidableCompositionLocal<FormatInitialFret> =
+    staticCompositionLocalOf { EnUsFormatInitialFret() }

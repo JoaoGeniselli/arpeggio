@@ -23,10 +23,18 @@ internal fun Grid(
     val sizes = DiagramTheme.sizes
     val colors = DiagramTheme.colors
     val typography = DiagramTheme.typography
+    val frets = DiagramTheme.frets
+    val strings = DiagramTheme.strings
 
     Canvas(modifier = modifier.fillMaxSize()) {
         val inset = sizes.position.toPx() / 2f
-        val geometry = extractGeometry(inset, sizes.position, sizes.strokeWidth)
+        val geometry = extractGeometry(
+            inset = inset,
+            positionSize = sizes.position,
+            strokeWidth = sizes.strokeWidth,
+            frets = frets,
+            strings = strings
+        )
         inset(horizontal = inset - sizes.strokeWidth.toPx()) {
             drawRect(colors.grid, size = Size(width = size.width, height = inset))
         }
@@ -37,13 +45,15 @@ internal fun Grid(
             bottom = inset * 2 + 8.dp.toPx()
         ) {
             drawGrid(
-                geometry.stringSpaceWidth,
-                geometry.fretSpaceHeight,
-                colors.grid,
-                sizes.strokeWidth
+                frets = frets,
+                strings = strings,
+                columnWidth = geometry.stringSpaceWidth,
+                rowHeight = geometry.fretSpaceHeight,
+                color = colors.grid,
+                strokeWidth = sizes.strokeWidth
             )
         }
-        GridScope(initialFret, colors, geometry, sizes, typography, this)
+        GridScope(initialFret, colors, geometry, sizes, typography, strings, this)
             .apply(scope)
             .commit()
     }
@@ -55,6 +65,7 @@ internal class GridScope(
     private val geometry: Geometry,
     private val sizes: Sizes,
     private val typography: Typography,
+    strings: Int,
     private val drawScope: DrawScope
 ) {
     private val stringUsage = (0 until strings).map { it to false }.toMap().toMutableMap()
@@ -87,7 +98,7 @@ internal class GridScope(
     }
 
     fun draw(component: Component) {
-        when(component) {
+        when (component) {
             is Barre -> draw(barre = component)
             is OpenString -> draw(openString = component)
             is Position -> draw(position = component)

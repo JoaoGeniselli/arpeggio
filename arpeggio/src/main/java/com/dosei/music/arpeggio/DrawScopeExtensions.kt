@@ -14,7 +14,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 
-internal fun DrawScope.extractGeometry(inset: Float, positionSize: Dp, strokeWidth: Dp): Geometry {
+internal fun DrawScope.extractGeometry(
+    inset: Float,
+    positionSize: Dp,
+    strokeWidth: Dp,
+    frets: Int,
+    strings: Int
+): Geometry {
     val gridSize = Size(
         width = size.width - positionSize.toPx(),
         height = size.height - (positionSize.toPx() * 1.5f + 8.dp.toPx())
@@ -36,6 +42,8 @@ internal fun DrawScope.extractGeometry(inset: Float, positionSize: Dp, strokeWid
 }
 
 internal fun DrawScope.drawGrid(
+    frets: Int,
+    strings: Int,
     columnWidth: Float,
     rowHeight: Float,
     color: Color,
