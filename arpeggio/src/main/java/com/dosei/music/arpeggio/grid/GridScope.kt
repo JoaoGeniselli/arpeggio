@@ -16,7 +16,7 @@ internal class GridScope(
     private val geometry: Geometry,
     private val sizes: Sizes,
     private val typography: Typography,
-    strings: Int,
+    private val strings: Int,
     private val drawScope: DrawScope
 ) {
     private val stringUsage = (0 until strings).map { it to false }.toMap().toMutableMap()
@@ -58,9 +58,9 @@ internal class GridScope(
 
     fun draw(barre: Barre) {
         drawScope.drawBarre(
-            initialStringCenter = geometry.centerOfString(barre.strings.first),
-            finalStringCenter = geometry.centerOfString(barre.strings.last),
-            fretCenter = geometry.centerOfFret(barre.fret.adjusted()),
+            initialStringCenter = geometry.centerOfString(barre.strings.last.toCanvasPosition()),
+            finalStringCenter = geometry.centerOfString(barre.strings.first.toCanvasPosition()),
+            fretCenter = geometry.centerOfFret(barre.fret.relativeToInitialFret()),
             color = colors.position,
             positionSize = sizes.position
         )
@@ -68,19 +68,19 @@ internal class GridScope(
         barre.finger?.let {
             drawScope.drawFingerIndicator(
                 finger = it,
-                fretCenter = geometry.centerOfFret(barre.fret.adjusted()),
-                stringCenter = geometry.centerOfString(barre.strings.first),
+                fretCenter = geometry.centerOfFret(barre.fret.relativeToInitialFret()),
+                stringCenter = geometry.centerOfString(barre.strings.last.toCanvasPosition()),
                 color = typography.fingerIndicator.color,
                 positionSize = sizes.position,
                 textSize = typography.fingerIndicator.fontSize
             )
         }
-        stringUsage.putAll(barre.strings.map { it to true })
+        stringUsage.putAll(barre.strings.map { it.toCanvasPosition() to true })
     }
 
     fun draw(position: Position) {
-        val fretCenter = geometry.centerOfFret(position.fret.adjusted())
-        val stringCenter = geometry.centerOfString(position.string)
+        val fretCenter = geometry.centerOfFret(position.fret.relativeToInitialFret())
+        val stringCenter = geometry.centerOfString(position.string.toCanvasPosition())
 
         drawScope.drawPosition(
             fretCenter = fretCenter,
@@ -99,12 +99,14 @@ internal class GridScope(
                 textSize = typography.fingerIndicator.fontSize
             )
         }
-        stringUsage[position.string] = true
+        stringUsage[position.string.toCanvasPosition()] = true
     }
 
     fun draw(openString: OpenString) {
-        stringUsage[openString.string] = true
+        stringUsage[openString.string.toCanvasPosition()] = true
     }
 
-    private fun Int.adjusted(): Int = minus(fretDiff)
+    private fun Int.relativeToInitialFret(): Int = minus(fretDiff)
+
+    private fun Int.toCanvasPosition(): Int = strings - this
 }

@@ -96,11 +96,12 @@ private fun PreviewInitialFret() {
     Surface(color = Color.White, modifier = Modifier.fillMaxSize()) {
         ChordDiagram(
             modifier = Modifier.padding(16.dp),
-            name = "Bm",
+            name = "B",
             components = listOf(
-                Barre(fret = 7, strings = 0..5, finger = Finger.Index),
-                Position(fret = 9, string = 2, finger = Finger.Pinky),
-                Position(fret = 9, string = 1, finger = Finger.Ring),
+                Barre(fret = 7, strings = 1..6, finger = Finger.Index),
+                Position(fret = 8, string = 3, finger = Finger.Middle),
+                Position(fret = 9, string = 4, finger = Finger.Pinky),
+                Position(fret = 9, string = 5, finger = Finger.Ring),
             )
         )
     }

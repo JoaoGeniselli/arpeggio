@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.drawscope.inset
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dosei.music.arpeggio.Barre
+import com.dosei.music.arpeggio.DefaultInitialFret
 import com.dosei.music.arpeggio.Finger
 import com.dosei.music.arpeggio.Position
 import com.dosei.music.arpeggio.canvas.drawGrid
@@ -22,7 +23,7 @@ import com.dosei.music.arpeggio.theme.DiagramTheme
 @Composable
 internal fun Grid(
     modifier: Modifier = Modifier,
-    initialFret: Int = 1,
+    initialFret: Int = DefaultInitialFret,
     scope: GridScope.() -> Unit
 ) {
     val sizes = DiagramTheme.sizes
@@ -73,16 +74,16 @@ private fun PreviewChordThumbnail() {
             scope = {
                 draw(
                     Barre(
-                        fret = 7,
+                        fret = 2,
                         strings = 1..5,
                         finger = Finger.Index
                     )
                 )
-                draw(Position(fret = 3, string = 4, finger = Finger.Middle))
+                draw(Position(fret = 3, string = 2, finger = Finger.Middle))
                 draw(Position(fret = 4, string = 3, finger = Finger.Pinky))
-                draw(Position(fret = 4, string = 2, finger = Finger.Ring))
+                draw(Position(fret = 4, string = 4, finger = Finger.Ring))
             },
-            initialFret = 7
+            initialFret = 1
         )
     }
 }

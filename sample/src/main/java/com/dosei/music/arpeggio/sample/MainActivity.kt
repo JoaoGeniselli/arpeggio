@@ -104,11 +104,11 @@ fun PreviewSimpleChord() {
             modifier = Modifier.padding(16.dp),
             name = chordName,
             components = listOf(
-                Position(fret = 3, string = 1, finger = Finger.Ring),
-                Position(fret = 2, string = 2, finger = Finger.Middle),
+                Position(fret = 3, string = 5, finger = Finger.Ring),
+                Position(fret = 2, string = 4, finger = Finger.Middle),
                 Position(fret = 4, string = 3, finger = Finger.Pinky),
-                Position(fret = 1, string = 4, finger = Finger.Index),
-                OpenString(5)
+                Position(fret = 1, string = 2, finger = Finger.Index),
+                OpenString(1)
             )
         )
     }
@@ -124,9 +124,9 @@ fun PreviewGuitarThumbnail() {
                     modifier = Modifier.padding(8.dp),
                     name = "Bm",
                     components = listOf(
-                        Barre(fret = 7, strings = 0..5),
-                        Position(fret = 9, string = 2),
-                        Position(fret = 9, string = 1),
+                        Barre(fret = 7, strings = 1..6),
+                        Position(fret = 9, string = 4),
+                        Position(fret = 9, string = 5),
                     )
                 )
             }
@@ -144,10 +144,10 @@ fun PreviewUkuleleThumbnail() {
                     modifier = Modifier.padding(8.dp),
                     name = "E",
                     components = listOf(
-                        Position(fret = 1, string = 0),
-                        Position(fret = 2, string = 3),
+                        Position(fret = 1, string = 4),
+                        Position(fret = 2, string = 1),
                         Position(fret = 4, string = 2),
-                        OpenString(1)
+                        OpenString(3)
                     )
                 )
             }
