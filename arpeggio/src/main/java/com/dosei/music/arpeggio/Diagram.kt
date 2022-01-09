@@ -4,8 +4,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,14 +17,14 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-val gridColor = Color.Black
-val nameTextColor = gridColor
-val positionColor = Color.Black
-val fingerIndicatorColor = Color.White
-
-val nameFontSize = 40.sp
-val positionSize = 40.dp
-val strokeWidth = 2.dp
+//val gridColor = Color.Black
+//val nameTextColor = gridColor
+//val positionColor = Color.Black
+//val fingerIndicatorColor = Color.White
+//
+//val nameFontSize = 40.sp
+//val positionSize = 40.dp
+//val strokeWidth = 2.dp
 
 val formatInitialFret = if (Locale.current == Locale("pt-br")) {
     FormatInitialFret.ptBr()
@@ -45,6 +43,7 @@ fun Diagram(
     name: String,
     components: List<Component>
 ) {
+    val typography = DiagramTheme.typography
     val firstFret = if (components.fitsInFretRange(defaultFretRange)) {
         defaultInitialFret
     } else {
@@ -53,9 +52,7 @@ fun Diagram(
     Column(modifier = modifier) {
         Text(
             text = name,
-            fontSize = nameFontSize,
-            color = nameTextColor,
-            fontWeight = FontWeight.Bold,
+            style = typography.name,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
         Row(modifier = Modifier.padding(top = 8.dp)) {
@@ -64,14 +61,12 @@ fun Diagram(
                     modifier = Modifier.width(40.dp),
                     textAlign = TextAlign.Center,
                     text = formatInitialFret(firstFret),
-                    fontSize = 24.sp,
-                    color = nameTextColor,
-                    fontWeight = FontWeight.Bold
+                    style = typography.firstFretIndicator
                 )
             } else {
                 Spacer(modifier = Modifier.width(40.dp))
             }
-            GridTop(
+            Grid(
                 modifier = Modifier.weight(1f),
                 initialFret = firstFret
             ) {

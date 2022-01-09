@@ -1,16 +1,20 @@
 package com.dosei.music.arpeggio
 
 import android.graphics.Typeface
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 
-internal fun DrawScope.extractGeometry(inset: Float): Geometry {
+internal fun DrawScope.extractGeometry(inset: Float, positionSize: Dp, strokeWidth: Dp): Geometry {
     val gridSize = Size(
         width = size.width - positionSize.toPx(),
         height = size.height - (positionSize.toPx() * 1.5f + 8.dp.toPx())
@@ -33,33 +37,35 @@ internal fun DrawScope.extractGeometry(inset: Float): Geometry {
 
 internal fun DrawScope.drawGrid(
     columnWidth: Float,
-    rowHeight: Float
+    rowHeight: Float,
+    color: Color,
+    strokeWidth: Dp
 ) {
     drawRect(
-        color = gridColor,
+        color = color,
         style = Stroke(width = strokeWidth.toPx())
     )
 
     for (fret in 1 until frets) {
-        drawHorizontalLine(fret * rowHeight)
+        drawHorizontalLine(fret * rowHeight, color, strokeWidth)
     }
 
     for (string in 1 until strings.dec()) {
-        drawVerticalLine(string * columnWidth)
+        drawVerticalLine(string * columnWidth, color, strokeWidth)
     }
 }
 
-internal fun DrawScope.drawHorizontalLine(y: Float) =
+internal fun DrawScope.drawHorizontalLine(y: Float, color: Color, strokeWidth: Dp) =
     drawLine(
-        color = gridColor,
+        color = color,
         start = Offset(x = 0f, y = y),
         end = Offset(x = size.width, y = y),
         strokeWidth = strokeWidth.toPx()
     )
 
-internal fun DrawScope.drawVerticalLine(x: Float) =
+internal fun DrawScope.drawVerticalLine(x: Float, color: Color, strokeWidth: Dp) =
     drawLine(
-        color = gridColor,
+        color = color,
         start = Offset(x = x, y = 0f),
         end = Offset(x = x, y = size.height),
         strokeWidth = strokeWidth.toPx()
@@ -67,10 +73,12 @@ internal fun DrawScope.drawVerticalLine(x: Float) =
 
 fun DrawScope.drawPosition(
     fretCenter: Float,
-    stringLine: Float
+    stringLine: Float,
+    color: Color,
+    positionSize: Dp
 ) {
     drawCircle(
-        color = positionColor,
+        color = color,
         radius = positionSize.toPx() / 2f,
         center = Offset(x = stringLine, y = fretCenter)
     )
@@ -79,13 +87,16 @@ fun DrawScope.drawPosition(
 fun DrawScope.drawFingerIndicator(
     finger: Finger,
     fretCenter: Float,
-    stringCenter: Float
+    stringCenter: Float,
+    color: Color,
+    positionSize: Dp,
+    textSize: TextUnit
 ) {
     val paint = Paint().asFrameworkPaint().apply {
-        textSize = (positionSize - 20.dp).toPx()
-        color = fingerIndicatorColor.hashCode()
-        textAlign = android.graphics.Paint.Align.CENTER
-        typeface = Typeface.DEFAULT_BOLD
+        this.color = color.hashCode()
+        this.textSize = textSize.toPx()
+        this.textAlign = android.graphics.Paint.Align.CENTER
+        this.typeface = Typeface.DEFAULT_BOLD
     }
 
     drawIntoCanvas {
@@ -100,16 +111,18 @@ fun DrawScope.drawFingerIndicator(
 
 fun DrawScope.drawClosedStringIndicator(
     start: Offset,
-    end: Offset
+    end: Offset,
+    color: Color,
+    strokeWidth: Dp
 ) {
     drawLine(
-        color = positionColor,
+        color = color,
         strokeWidth = strokeWidth.toPx(),
         start = start,
         end = end
     )
     drawLine(
-        color = positionColor,
+        color = color,
         strokeWidth = strokeWidth.toPx(),
         start = Offset(x = start.x, y = end.y),
         end = Offset(x = end.x, y = start.y)
@@ -117,12 +130,38 @@ fun DrawScope.drawClosedStringIndicator(
 }
 
 fun DrawScope.drawOpenStringIndicator(
-    center: Offset
+    center: Offset,
+    color: Color,
+    strokeWidth: Dp,
+    positionSize: Dp
 ) {
     drawCircle(
-        color = positionColor,
+        color = color,
         style = Stroke(width = strokeWidth.toPx()),
         radius = (positionSize.toPx() / 2f) - strokeWidth.toPx(),
         center = center
+    )
+}
+
+fun DrawScope.drawBarre(
+    initialStringCenter: Float,
+    finalStringCenter: Float,
+    fretCenter: Float,
+    color: Color,
+    positionSize: Dp
+) {
+    val halfPositionSize = positionSize.toPx() / 2f
+    val initialX = initialStringCenter - halfPositionSize
+    drawRoundRect(
+        color = color,
+        topLeft = Offset(
+            x = initialX,
+            y = fretCenter - halfPositionSize
+        ),
+        size = Size(
+            width = finalStringCenter - initialX + halfPositionSize,
+            height = positionSize.toPx()
+        ),
+        cornerRadius = CornerRadius(x = halfPositionSize, y = halfPositionSize)
     )
 }

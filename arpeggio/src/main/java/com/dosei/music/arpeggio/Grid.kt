@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
@@ -17,16 +15,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun GridTop(
+internal fun Grid(
     modifier: Modifier = Modifier,
     initialFret: Int = 1,
-    scope: GridTopScope.() -> Unit
+    scope: GridScope.() -> Unit
 ) {
+    val sizes = DiagramTheme.sizes
+    val colors = DiagramTheme.colors
+    val typography = DiagramTheme.typography
+
     Canvas(modifier = modifier.fillMaxSize()) {
-        val inset = positionSize.toPx() / 2f
-        val geometry = extractGeometry(inset)
-        inset(horizontal = inset - strokeWidth.toPx()) {
-            drawRect(gridColor, size = Size(width = size.width, height = inset))
+        val inset = sizes.position.toPx() / 2f
+        val geometry = extractGeometry(inset, sizes.position, sizes.strokeWidth)
+        inset(horizontal = inset - sizes.strokeWidth.toPx()) {
+            drawRect(colors.grid, size = Size(width = size.width, height = inset))
         }
         inset(
             left = inset,
@@ -36,38 +38,23 @@ fun GridTop(
         ) {
             drawGrid(
                 geometry.stringSpaceWidth,
-                geometry.fretSpaceHeight
+                geometry.fretSpaceHeight,
+                colors.grid,
+                sizes.strokeWidth
             )
         }
-        GridTopScope(initialFret, geometry, this)
+        GridScope(initialFret, colors, geometry, sizes, typography, this)
             .apply(scope)
             .commit()
     }
 }
 
-fun DrawScope.drawBarre(
-    initialStringCenter: Float,
-    finalStringCenter: Float,
-    fretCenter: Float
-) {
-    val initialX = initialStringCenter - positionSize.toPx() / 2f
-    drawRoundRect(
-        color = positionColor,
-        topLeft = Offset(
-            x = initialX,
-            y = fretCenter - positionSize.toPx() / 2f
-        ),
-        size = Size(
-            width = finalStringCenter - initialX + positionSize.toPx() / 2f,
-            height = positionSize.toPx()
-        ),
-        cornerRadius = CornerRadius(x = positionSize.toPx() / 2f, y = positionSize.toPx() / 2f)
-    )
-}
-
-class GridTopScope(
+internal class GridScope(
     initialFret: Int,
-    val geometry: Geometry,
+    private val colors: Colors,
+    private val geometry: Geometry,
+    private val sizes: Sizes,
+    private val typography: Typography,
     private val drawScope: DrawScope
 ) {
     private val stringUsage = (0 until strings).map { it to false }.toMap().toMutableMap()
@@ -80,14 +67,19 @@ class GridTopScope(
             if (isUsed) {
                 drawScope.run {
                     drawOpenStringIndicator(
-                        geometry.centerOfStringIndicator(string)
+                        geometry.centerOfStringIndicator(string),
+                        colors.stringUsageIndicator,
+                        sizes.strokeWidth,
+                        sizes.position
                     )
                 }
             } else {
                 drawScope.run {
                     drawClosedStringIndicator(
                         geometry.topLeftOfStringIndicator(string),
-                        geometry.bottomRightOfStringIndicator(string)
+                        geometry.bottomRightOfStringIndicator(string),
+                        colors.stringUsageIndicator,
+                        sizes.strokeWidth
                     )
                 }
             }
@@ -106,14 +98,19 @@ class GridTopScope(
         drawScope.drawBarre(
             initialStringCenter = geometry.centerOfString(barre.strings.first),
             finalStringCenter = geometry.centerOfString(barre.strings.last),
-            fretCenter = geometry.centerOfFret(barre.fret.adjusted())
+            fretCenter = geometry.centerOfFret(barre.fret.adjusted()),
+            color = colors.position,
+            positionSize = sizes.position
         )
 
         barre.finger?.let {
             drawScope.drawFingerIndicator(
                 finger = it,
                 fretCenter = geometry.centerOfFret(barre.fret.adjusted()),
-                stringCenter = geometry.centerOfString(barre.strings.first)
+                stringCenter = geometry.centerOfString(barre.strings.first),
+                color = typography.fingerIndicator.color,
+                positionSize = sizes.position,
+                textSize = typography.fingerIndicator.fontSize
             )
         }
         stringUsage.putAll(barre.strings.map { it to true })
@@ -125,14 +122,19 @@ class GridTopScope(
 
         drawScope.drawPosition(
             fretCenter = fretCenter,
-            stringLine = stringCenter
+            stringLine = stringCenter,
+            color = colors.position,
+            positionSize = sizes.position
         )
 
         position.finger?.let {
             drawScope.drawFingerIndicator(
                 finger = it,
                 fretCenter = fretCenter,
-                stringCenter = stringCenter
+                stringCenter = stringCenter,
+                color = typography.fingerIndicator.color,
+                positionSize = sizes.position,
+                textSize = typography.fingerIndicator.fontSize
             )
         }
         stringUsage[position.string] = true
@@ -149,7 +151,7 @@ class GridTopScope(
 @Composable
 private fun PreviewChordThumbnail() {
     Surface(modifier = Modifier.size(600.dp), color = Color.White) {
-        GridTop(
+        Grid(
             modifier = Modifier.padding(50.dp),
             scope = {
                 draw(

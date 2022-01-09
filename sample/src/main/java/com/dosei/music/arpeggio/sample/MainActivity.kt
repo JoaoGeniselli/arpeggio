@@ -9,12 +9,13 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.dosei.music.arpeggio.Barre
-import com.dosei.music.arpeggio.Diagram
-import com.dosei.music.arpeggio.Finger
-import com.dosei.music.arpeggio.Position
+import androidx.compose.ui.unit.sp
+import com.dosei.music.arpeggio.*
 import com.dosei.music.arpeggio.sample.ui.theme.ArpeggioTheme
 
 class MainActivity : ComponentActivity() {
@@ -22,32 +23,33 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ArpeggioTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(color = MaterialTheme.colors.background) {
-                    Diagram(
-                        modifier = Modifier.padding(16.dp),
-                        name = "Bm",
-                        components = listOf(
-                            Barre(fret = 7, strings = 0..5, finger = Finger.Index),
-                            Position(fret = 9, string = 2, finger = Finger.Pinky),
-                            Position(fret = 9, string = 1, finger = Finger.Ring),
-                        )
-                    )
-                }
+                Content()
             }
         }
     }
 }
 
 @Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
+fun Content() {
+    Surface(color = MaterialTheme.colors.background) {
+        DiagramTheme {
+            Diagram(
+                modifier = Modifier.padding(16.dp),
+                name = "Bm",
+                components = listOf(
+                    Barre(fret = 7, strings = 0..5, finger = Finger.Index),
+                    Position(fret = 9, string = 2, finger = Finger.Pinky),
+                    Position(fret = 9, string = 1, finger = Finger.Ring),
+                )
+            )
+        }
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     ArpeggioTheme {
-        Greeting("Android")
+        Content()
     }
 }
