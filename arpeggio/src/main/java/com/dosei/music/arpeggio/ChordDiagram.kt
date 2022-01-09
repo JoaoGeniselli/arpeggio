@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -19,6 +20,19 @@ fun ChordDiagram(
     name: String,
     components: List<Component>
 ) {
+    ChordDiagram(
+        modifier = modifier,
+        name = AnnotatedString(name),
+        components = components
+    )
+}
+
+@Composable
+fun ChordDiagram(
+    modifier: Modifier = Modifier,
+    name: AnnotatedString,
+    components: List<Component>
+) {
     val typography = DiagramTheme.typography
     val formatInitialFret = DiagramTheme.formatInitialFret
     val initialFretRange = DiagramTheme.initialFretRange
@@ -28,8 +42,9 @@ fun ChordDiagram(
     } else {
         components.firstFret()
     }
-    Column(modifier = modifier
-        .defaultMinSize(minWidth = MinWidth, minHeight = MinHeight)
+    Column(
+        modifier = modifier
+            .defaultMinSize(minWidth = MinWidth, minHeight = MinHeight)
     ) {
         Text(
             text = name,

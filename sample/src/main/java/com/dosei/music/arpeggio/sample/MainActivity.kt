@@ -11,8 +11,13 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontSynthesis
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.BaselineShift
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -84,9 +89,28 @@ fun UkuleleThumbnailTheme(
 
 @Preview(showBackground = true)
 @Composable
-fun DefaultPreview() {
+fun PreviewSimpleChord() {
     SampleTheme {
-        Content()
+        val chordName = buildAnnotatedString {
+            append("C")
+            withStyle(
+                style = SpanStyle(
+                    fontSize = 18.sp,
+                    baselineShift = BaselineShift.Superscript
+                )
+            ) { append("7+") }
+        }
+        ChordDiagram(
+            modifier = Modifier.padding(16.dp),
+            name = chordName,
+            components = listOf(
+                Position(fret = 3, string = 1, finger = Finger.Ring),
+                Position(fret = 2, string = 2, finger = Finger.Middle),
+                Position(fret = 4, string = 3, finger = Finger.Pinky),
+                Position(fret = 1, string = 4, finger = Finger.Index),
+                OpenString(5)
+            )
+        )
     }
 }
 
