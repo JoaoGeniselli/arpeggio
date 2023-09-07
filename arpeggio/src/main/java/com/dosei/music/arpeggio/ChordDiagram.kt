@@ -1,8 +1,8 @@
 package com.dosei.music.arpeggio
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -82,9 +82,9 @@ private fun PreviewDiagram() {
             name = "Bm",
             components = listOf(
                 Barre(fret = 2, strings = 1..5, finger = Finger.Index),
-                Position(fret = 3, string = 4, finger = Finger.Middle),
+                Position(fret = 4, string = 4, finger = Finger.Ring),
                 Position(fret = 4, string = 3, finger = Finger.Pinky),
-                Position(fret = 5, string = 2, finger = Finger.Ring),
+                Position(fret = 3, string = 2, finger = Finger.Middle),
             )
         )
     }

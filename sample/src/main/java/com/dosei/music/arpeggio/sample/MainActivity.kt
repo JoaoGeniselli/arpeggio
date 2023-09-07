@@ -6,15 +6,14 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontSynthesis
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.text.withStyle
@@ -40,15 +39,16 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Content() {
-    Surface(color = MaterialTheme.colors.background, modifier = Modifier.fillMaxSize()) {
+    Surface(color = MaterialTheme.colorScheme.background, modifier = Modifier.fillMaxSize()) {
         ArpeggioTheme {
             ChordDiagram(
                 modifier = Modifier.padding(16.dp),
-                name = "Bm",
+                name = "Em",
                 components = listOf(
-                    Barre(fret = 7, strings = 0..5, finger = Finger.Index),
-                    Position(fret = 9, string = 2, finger = Finger.Pinky),
-                    Position(fret = 9, string = 1, finger = Finger.Ring),
+                    Barre(fret = 7, strings = 1..5, finger = Finger.Index),
+                    Position(fret = 9, string = 4, finger = Finger.Pinky),
+                    Position(fret = 9, string = 3, finger = Finger.Ring),
+                    Position(fret = 8, string = 2, finger = Finger.Middle),
                 )
             )
         }
@@ -118,7 +118,7 @@ fun PreviewSimpleChord() {
 @Composable
 fun PreviewGuitarThumbnail() {
     SampleTheme {
-        Surface(color = MaterialTheme.colors.background, modifier = Modifier.size(220.dp, 200.dp)) {
+        Surface(color = MaterialTheme.colorScheme.background, modifier = Modifier.size(220.dp, 200.dp)) {
             GuitarThumbnailTheme {
                 ChordDiagram(
                     modifier = Modifier.padding(8.dp),
@@ -138,7 +138,7 @@ fun PreviewGuitarThumbnail() {
 @Composable
 fun PreviewUkuleleThumbnail() {
     SampleTheme {
-        Surface(color = MaterialTheme.colors.background, modifier = Modifier.size(220.dp, 200.dp)) {
+        Surface(color = MaterialTheme.colorScheme.background, modifier = Modifier.size(220.dp, 200.dp)) {
             UkuleleThumbnailTheme {
                 ChordDiagram(
                     modifier = Modifier.padding(8.dp),

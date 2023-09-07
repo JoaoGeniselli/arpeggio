@@ -4,13 +4,11 @@ plugins {
 }
 
 android {
-    compileSdk 31
+    compileSdk 33
 
     defaultConfig {
         minSdk 21
-        targetSdk 31
-        versionCode 1
-        versionName "1.0"
+        targetSdk 33
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -33,20 +31,43 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.0.0"
+        kotlinCompilerExtensionVersion = "1.4.3"
     }
+    namespace 'com.dosei.music.arpeggio'
 }
 
 dependencies {
+    //region Android/Kotlin
+
     implementation libs.core.ktx
     implementation libs.app.compat
     implementation libs.android.material
-    implementation libs.bundles.compose
     implementation libs.lifecycle.runtime
 
+    //endregion
+
+    //region Unit Tests
+
     testImplementation libs.junit.core
+
+    //endregion
+
+    //region UI
+
+    implementation platform(libs.compose.bom)
+    implementation libs.compose.ui
+    implementation libs.compose.material
+    implementation libs.compose.graphics
+    implementation libs.compose.preview
+    implementation libs.activity.compose
+
+    debugImplementation libs.compose.tooling.ui
+    debugImplementation libs.compose.test.manifest
+
+    androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation libs.android.test.ext
     androidTestImplementation libs.espresso.core
     androidTestImplementation libs.compose.junit
-    debugImplementation libs.compose.tooling.ui
+
+    //endregion
 }
