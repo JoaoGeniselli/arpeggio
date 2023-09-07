@@ -50,17 +50,38 @@ android {
 
 dependencies {
     implementation project(":arpeggio")
-    implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'androidx.appcompat:appcompat:1.4.0'
-    implementation 'com.google.android.material:material:1.4.0'
-    implementation "androidx.compose.ui:ui:$compose_version"
-    implementation "androidx.compose.material:material:$compose_version"
-    implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.0'
-    implementation 'androidx.activity:activity-compose:1.4.0'
-    testImplementation 'junit:junit:4.+'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
-    debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
+
+    //region Android/Kotlin
+
+    implementation libs.core.ktx
+    implementation libs.app.compat
+    implementation libs.android.material
+    implementation libs.lifecycle.runtime
+
+    //endregion
+
+    //region Unit Tests
+
+    testImplementation libs.junit.core
+
+    //endregion
+
+    //region UI
+
+    implementation platform(libs.compose.bom)
+    implementation libs.compose.ui
+    implementation libs.compose.material
+    implementation libs.compose.graphics
+    implementation libs.compose.preview
+    implementation libs.activity.compose
+
+    debugImplementation libs.compose.tooling.ui
+    debugImplementation libs.compose.test.manifest
+
+    androidTestImplementation(platform(libs.compose.bom))
+    androidTestImplementation libs.android.test.ext
+    androidTestImplementation libs.espresso.core
+    androidTestImplementation libs.compose.junit
+
+    //endregion
 }

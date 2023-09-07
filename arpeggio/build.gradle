@@ -37,15 +37,37 @@ android {
 }
 
 dependencies {
+    //region Android/Kotlin
+
     implementation libs.core.ktx
     implementation libs.app.compat
     implementation libs.android.material
-    implementation libs.bundles.compose
     implementation libs.lifecycle.runtime
 
+    //endregion
+
+    //region Unit Tests
+
     testImplementation libs.junit.core
+
+    //endregion
+
+    //region UI
+
+    implementation platform(libs.compose.bom)
+    implementation libs.compose.ui
+    implementation libs.compose.material
+    implementation libs.compose.graphics
+    implementation libs.compose.preview
+    implementation libs.activity.compose
+
+    debugImplementation libs.compose.tooling.ui
+    debugImplementation libs.compose.test.manifest
+
+    androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation libs.android.test.ext
     androidTestImplementation libs.espresso.core
     androidTestImplementation libs.compose.junit
-    debugImplementation libs.compose.tooling.ui
+
+    //endregion
 }
