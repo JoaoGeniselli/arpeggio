@@ -43,11 +43,12 @@ fun Content() {
         ArpeggioTheme {
             ChordDiagram(
                 modifier = Modifier.padding(16.dp),
-                name = "Bm",
+                name = "Em",
                 components = listOf(
-                    Barre(fret = 7, strings = 0..5, finger = Finger.Index),
-                    Position(fret = 9, string = 2, finger = Finger.Pinky),
-                    Position(fret = 9, string = 1, finger = Finger.Ring),
+                    Barre(fret = 7, strings = 1..5, finger = Finger.Index),
+                    Position(fret = 9, string = 4, finger = Finger.Pinky),
+                    Position(fret = 9, string = 3, finger = Finger.Ring),
+                    Position(fret = 8, string = 2, finger = Finger.Middle),
                 )
             )
         }
