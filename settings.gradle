@@ -3,8 +3,9 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        mavenLocal()
     }
 }
-rootProject.name = "Arpeggio"
+rootProject.name = "arpeggio"
 include ':sample'
 include ':arpeggio'
