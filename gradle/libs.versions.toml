@@ -28,4 +28,6 @@ junit-core = 'junit:junit:4.13.2'
 android-test-ext = 'androidx.test.ext:junit:1.1.5'
 espresso-core = 'androidx.test.espresso:espresso-core:3.5.1'
 
+arpeggio = 'com.dosei.music:arpeggio:1.0.0'
+
 [bundles]
