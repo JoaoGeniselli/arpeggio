@@ -92,8 +92,8 @@ afterEvaluate {
             }
         }
         publications {
-            release(MavenPublication) {
-                from components.release
+            gpr(MavenPublication) {
+                from(components.release)
             }
         }
     }
