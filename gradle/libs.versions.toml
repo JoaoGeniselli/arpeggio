@@ -1,5 +1,7 @@
 [versions]
 compose = '1.0.0'
+gradle = "8.1.1"
+kotlin-gradle-plugin = "1.6.21"
 
 [libraries]
 
@@ -11,6 +13,8 @@ compose-material = { module = 'androidx.compose.material:material', version.ref 
 compose-preview = { module = 'androidx.compose.ui:ui-tooling-preview', version.ref = 'compose' }
 compose-junit = { module = 'androidx.compose.ui:ui-test-junit4', version.ref = 'compose' }
 compose-tooling-ui = { module = 'androidx.compose.ui:ui-tooling', version.ref = 'compose' }
+gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin-gradle-plugin" }
 lifecycle-runtime = 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.0'
 activity-compose = 'androidx.activity:activity-compose:1.4.0'
 junit-core = 'junit:junit:4.13.2'
