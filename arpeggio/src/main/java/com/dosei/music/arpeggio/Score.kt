@@ -47,6 +47,7 @@ fun Score(
     highestNote: ScoreNote = GuitarNoteHighest,
     lowestNote: ScoreNote = GuitarNoteLowest,
     noteDecoration: ScoreNoteDecoration = NATURAL,
+    showSupplementaryLines: Boolean = true,
     onUpdateNoteIndex: (Int) -> Unit
 ) {
     val noteIndex = currentNote.index
@@ -89,13 +90,23 @@ fun Score(
         notes.sortedBy { note -> note.index }.forEach { note ->
             val yPosition = yCursor + (noteSize / 2f)
             if (note.isLine) {
-                drawHorizontalLine(
-                    color = if (note.isMainLine) lineColor else supplementaryLineColor,
-                    stroke = stroke,
-                    startX = 0f,
-                    endX = size.width,
-                    y = yPosition
-                )
+                if (note.isMainLine) {
+                    drawHorizontalLine(
+                        color = lineColor,
+                        stroke = stroke,
+                        startX = 0f,
+                        endX = size.width,
+                        y = yPosition
+                    )
+                } else if (showSupplementaryLines) {
+                    drawHorizontalLine(
+                        color = supplementaryLineColor,
+                        stroke = stroke,
+                        startX = 0f,
+                        endX = size.width,
+                        y = yPosition
+                    )
+                }
             }
             yCursor = yPosition
         }
@@ -240,6 +251,22 @@ private fun PreviewComposableScore() {
             modifier = Modifier
                 .padding(16.dp),
             currentNote = C4,
+            showSupplementaryLines = true,
+            onUpdateNoteIndex = {},
+            noteDecoration = SHARP
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun PreviewComposableScoreWithoutSupLines() {
+    Surface {
+        Score(
+            modifier = Modifier
+                .padding(16.dp),
+            currentNote = ScoreNote.C5,
+            showSupplementaryLines = false,
             onUpdateNoteIndex = {},
             noteDecoration = SHARP
         )
