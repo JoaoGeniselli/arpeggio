@@ -2,19 +2,19 @@ package com.dosei.music.arpeggio
 
 sealed class Component
 
-class Barre(
+data class Barre(
     val fret: Int,
     val strings: IntRange,
     val finger: Finger? = null
 ) : Component()
 
-class Position(
+data class Position(
     val fret: Int,
     val string: Int,
     val finger: Finger? = null
 ) : Component()
 
-class OpenString(val string: Int) : Component()
+data class OpenString(val string: Int) : Component()
 
 internal fun List<Component>.fitsInFretRange(fretRange: IntRange): Boolean =
     fretRange.run {
